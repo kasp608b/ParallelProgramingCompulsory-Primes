@@ -117,7 +117,9 @@ namespace Primes
 
         }
 
+        private void PrimesList_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
-
+        }
     }
 }
