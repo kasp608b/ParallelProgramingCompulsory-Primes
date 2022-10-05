@@ -86,7 +86,7 @@ namespace Primes
         {
 
             ConcurrentQueue<long> PrimesFound = new ConcurrentQueue<long>();
-            int a, b, i, j, flag;
+            int a, b, i, j;
 
             a = Convert.ToInt32(first); // Take input
 
@@ -131,6 +131,7 @@ namespace Primes
 
             Parallel.ForEach(oddNums, oddNum =>
             {
+                int flag;
                 // flag variable to tell
                 // if i is prime or not
                 flag = 1;
@@ -157,61 +158,6 @@ namespace Primes
 
             });
 
-            //Parallel.ForEach(Partitioner.Create(0, oddNum.Count), (range, loopState) =>
-            //{
-            //    for (int i = range.Item1; i < range.Item2; i++)
-            //    {
-            //        // flag variable to tell
-            //        // if i is prime or not
-            //        flag = 1;
-
-            //        // WE TRAVERSE TILL SQUARE ROOT OF j only.
-            //        // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
-            //        for (j = 2; j * j <= i; ++j)
-            //        {
-            //            if (i % j == 0)
-            //            {
-            //                flag = 0;
-            //                break;
-            //            }
-            //        }
-
-            //        // flag = 1 means i is prime
-            //        // and flag = 0 means i is not prime
-            //        if (flag == 1)
-            //        {
-            //            PrimesFound.Add(i);
-            //        }
-            //    }
-            //});
-
-            //// NOTE : WE TRAVERSE THROUGH ODD NUMBERS ONLY
-            //for (i = a; i <= b; i = i + 2)
-            //{
-
-
-            //    // flag variable to tell
-            //    // if i is prime or not
-            //    flag = 1;
-
-            //    // WE TRAVERSE TILL SQUARE ROOT OF j only.
-            //    // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
-            //    for (j = 2; j * j <= i; ++j)
-            //    {
-            //        if (i % j == 0)
-            //        {
-            //            flag = 0;
-            //            break;
-            //        }
-            //    }
-
-            //    // flag = 1 means i is prime
-            //    // and flag = 0 means i is not prime
-            //    if (flag == 1)
-            //    {
-            //        PrimesFound.Add(i);
-            //    }
-            //}
             List<long> sortedPrimes = PrimesFound.ToList<long>();
             sortedPrimes.Sort();
 
