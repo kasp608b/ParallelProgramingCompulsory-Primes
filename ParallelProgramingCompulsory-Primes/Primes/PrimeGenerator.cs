@@ -86,7 +86,7 @@ namespace Primes
         {
 
             ConcurrentQueue<long> PrimesFound = new ConcurrentQueue<long>();
-            int a, b, i, j;
+            int a, b, i;
 
             a = Convert.ToInt32(first); // Take input
 
@@ -131,6 +131,7 @@ namespace Primes
 
             Parallel.ForEach(oddNums, oddNum =>
             {
+                int j;
                 int flag;
                 // flag variable to tell
                 // if i is prime or not

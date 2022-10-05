@@ -82,6 +82,7 @@ namespace Primes
 
                 foreach (var prime in primesFound)
                 {
+                    
                     this.PrimesList.Items.Add(prime);
                 }
 
