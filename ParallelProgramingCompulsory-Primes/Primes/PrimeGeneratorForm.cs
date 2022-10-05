@@ -90,26 +90,5 @@ namespace Primes
             }
         }
 
-        private Task<Boolean> DisplayAsync(string time, List<long> primesFound)
-        {
-            return Task.Run<Boolean>(() => Display(time, primesFound));
-
-        }
-
-        private Boolean Display(string time, List<long> primesFound)
-        {
-            this.timeTextBox.Text = time;
-
-            foreach (var prime in primesFound)
-            {
-                this.PrimesList.Items.Add(prime);
-            }
-
-            return true;
-
-        }
-
-
-
     }
 }

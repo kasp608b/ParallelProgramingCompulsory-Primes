@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -85,7 +86,7 @@ namespace Primes
         {
             object theLock = new object();
 
-            List<long> PrimesFound = new List<long>();
+            ConcurrentQueue<long> PrimesFound = new ConcurrentQueue<long>();
             int a, b, i, j, flag;
 
             a = Convert.ToInt32(first); // Take input
@@ -123,6 +124,14 @@ namespace Primes
                         PrimesFound.Add(i);
 
                 }
+
+                // flag = 1 means i is prime
+                // and flag = 0 means i is not prime
+                if (flag == 1)
+                {
+                    PrimesFound.Enqueue(oddNum);
+                }
+
             });
 
             PrimesFound.Sort();
