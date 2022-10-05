@@ -79,6 +79,7 @@ namespace Primes
 
         public List<long> GetPrimesParallel(long first, long last)
         {
+            object theLock = new object();
 
             List<long> PrimesFound = new List<long>();
             int a, b, i, j, flag;
@@ -117,7 +118,7 @@ namespace Primes
             {*/
             Parallel.ForEach(Partitioner.Create(0, b), (range, loopState) =>
             {
-                for (int i = range.Item1; i < range.Item2; i += 2)
+                for (int i = range.Item1; i < range.Item2; i++)
                 {
                     // flag variable to tell
                     // if i is prime or not
@@ -138,7 +139,10 @@ namespace Primes
                     // and flag = 0 means i is not prime
                     if (flag == 1)
                     {
-                        PrimesFound.Add(i);
+                        lock (theLock)
+                        {
+                            PrimesFound.Add(i);
+                        }
                     }
                 }
             });
