@@ -6,30 +6,10 @@ namespace Primes
 {
     public partial class Form : System.Windows.Forms.Form
     {
-        public class Prime
-        {
-            public Prime(long s)
-            {
-                _value = s;
-            }
-            public long Value { get { return _value; } set { _value = value; } }
-            long _value;
-        }
-
         PrimeGenerator primeGenerator = new PrimeGenerator();
-        List<long> primesFound = new List<long>();
-        List<Prime> objectPrimes = new List<Prime>();
-        BindingSource listBoxBindingSource = new BindingSource();
-        
         public Form()
         {
             InitializeComponent();
-            listBoxBindingSource.DataSource = objectPrimes;
-            PrimesList.DisplayMember = "Value";
-            PrimesList.DataSource = listBoxBindingSource;
-            
-            
-
         }
         private async void btnGetPrimesSequential_Click(object sender, EventArgs e)
         {
@@ -38,7 +18,7 @@ namespace Primes
                 //clear the display
                 this.timeTextBox.Text = "";
 
-                primesFound.Clear();
+                this.PrimesList.Items.Clear();
 
                 //Calculate results
                 long fromInputlong = long.Parse(fromInput.Text);
@@ -46,11 +26,7 @@ namespace Primes
 
                 Stopwatch sw = Stopwatch.StartNew();
 
-                primesFound = await Task.Factory.StartNew(() => primeGenerator.GetPrimesSequential(fromInputlong, toInputlong));
-
-                foreach (var prime in primesFound) {
-                    objectPrimes.Add(new Prime(prime));
-                }
+                List<long> primesFound = await Task.Factory.StartNew(() => primeGenerator.GetPrimesSequential(fromInputlong, toInputlong));
 
                 sw.Stop();
 
@@ -60,8 +36,16 @@ namespace Primes
                 // Display the results:
                 //
 
+                this.PrimesList.BeginUpdate();
+
                 this.timeTextBox.Text = time;
 
+                foreach (var prime in primesFound)
+                {
+                    this.PrimesList.Items.Add(prime);
+                }
+
+                this.PrimesList.EndUpdate();
 
             }
 
@@ -74,7 +58,7 @@ namespace Primes
                 //clear the display
                 this.timeTextBox.Text = "";
 
-                primesFound.Clear();
+                this.PrimesList.Items.Clear();
 
                 //Calculate results
                 long fromInputlong = long.Parse(fromInput.Text);
@@ -82,11 +66,7 @@ namespace Primes
 
                 Stopwatch sw = Stopwatch.StartNew();
 
-                primesFound = await Task.Factory.StartNew(() => primeGenerator.GetPrimesParallel(fromInputlong, toInputlong));
-                foreach (var prime in primesFound)
-                {
-                    objectPrimes.Add(new Prime(prime));
-                }
+                List<long> primesFound = await Task.Factory.StartNew(() => primeGenerator.GetPrimesParallel(fromInputlong, toInputlong));
 
                 sw.Stop();
 
@@ -96,7 +76,16 @@ namespace Primes
                 // Display the results:
                 //
 
+                this.PrimesList.BeginUpdate();
+
                 this.timeTextBox.Text = time;
+
+                foreach (var prime in primesFound)
+                {
+                    this.PrimesList.Items.Add(prime);
+                }
+
+                this.PrimesList.EndUpdate();
 
             }
         }
