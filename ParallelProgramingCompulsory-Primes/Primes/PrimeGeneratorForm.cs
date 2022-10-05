@@ -31,21 +31,23 @@ namespace Primes
                 sw.Stop();
 
                 string time = String.Format("{0:f3} sec.", sw.Elapsed.TotalSeconds);
-
+                Debug.WriteLine(time);
                 //
                 // Display the results:
                 //
-
+                
                 this.PrimesList.BeginUpdate();
-
+                
                 this.timeTextBox.Text = time;
-
+                PrimesList.Items.AddRange(new object[] { primesFound });
+                /*
                 foreach (var prime in primesFound)
                 {
                     this.PrimesList.Items.Add(prime);
-                }
+                }*/
 
                 this.PrimesList.EndUpdate();
+                
 
             }
 
@@ -71,19 +73,25 @@ namespace Primes
                 sw.Stop();
 
                 string time = String.Format("{0:f3} sec.", sw.Elapsed.TotalSeconds);
-
+                Debug.WriteLine(time);
                 //
                 // Display the results:
                 //
-
+                
                 this.PrimesList.BeginUpdate();
 
                 this.timeTextBox.Text = time;
-
+                /*
                 foreach (var prime in primesFound)
                 {
                     this.PrimesList.Items.Add(prime);
                 }
+                */
+
+
+                this.PrimesList.Items.AddRange(new object[]{"System.Windows.Forms",
+        "System.Drawing", "System.Xml", "System.Net", "System.Runtime.Remoting",
+        "System.Web"});
 
                 this.PrimesList.EndUpdate();
 

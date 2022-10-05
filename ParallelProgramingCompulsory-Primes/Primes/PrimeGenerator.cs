@@ -12,9 +12,9 @@ namespace Primes
 {
     internal class PrimeGenerator
     {
+        object theLock = new object();
         public List<long> GetPrimesSequential(long first, long last)
         {
-
             List<long> PrimesFound = new List<long>();
             int a, b, i, j, flag;
 
@@ -83,10 +83,10 @@ namespace Primes
 
         public List<long> GetPrimesParallel(long first, long last)
         {
-            object theLock = new object();
 
             List<long> PrimesFound = new List<long>();
-            int a, b, i, j, flag;
+            int a;
+            int b;
 
             a = Convert.ToInt32(first); // Take input
 
@@ -97,6 +97,8 @@ namespace Primes
 
             Parallel.ForEach(Partitioner.Create(0, b), (range, loopState) =>
             {
+                int j;
+                int flag;
                 for (int i = range.Item1; i < range.Item2; i++)
                 {
                     // Skip 0 and 1 as they are
@@ -120,7 +122,12 @@ namespace Primes
                     // flag = 1 means i is prime
                     // and flag = 0 means i is not prime
                     if (flag == 1)
-                        PrimesFound.Add(i);
+                    {
+                        lock (theLock)
+                        {
+                            PrimesFound.Add(i);
+                        }
+                    }
 
                 }
             });
