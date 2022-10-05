@@ -1,8 +1,10 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -77,8 +79,74 @@ namespace Primes
 
         public List<long> GetPrimesParallel(long first, long last)
         {
-            throw new NotImplementedException();
+
+            List<long> PrimesFound = new List<long>();
+            int a, b, i, j, flag;
+
+            a = Convert.ToInt32(first); // Take input
+
+            b = Convert.ToInt32(last); // Take input
+
+            // Explicitly handling the cases when a is less than
+            // 2
+            if (a == 1)
+            {
+                PrimesFound.Add(a);
+                a++;
+                if (b >= 2)
+                {
+                    PrimesFound.Add(a);
+                    a++;
+                }
+            }
+            if (a == 2)
+            {
+                PrimesFound.Add(a);
+            }
+
+            // MAKING SURE THAT a IS ODD BEFORE WE BEGIN
+            // THE LOOP
+            if (a % 2 == 0)
+            {
+                a++;
+            }
+
+            // NOTE : WE TRAVERSE THROUGH ODD NUMBERS ONLY
+            /*
+            for (i = a; i <= b; i = i + 2)
+            {*/
+            Parallel.ForEach(Partitioner.Create(0, b), (range, loopState) =>
+            {
+                for (int i = range.Item1; i < range.Item2; i += 2)
+                {
+                    // flag variable to tell
+                    // if i is prime or not
+                    flag = 1;
+
+                    // WE TRAVERSE TILL SQUARE ROOT OF j only.
+                    // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
+                    for (j = 2; j * j <= i; ++j)
+                    {
+                        if (i % j == 0)
+                        {
+                            flag = 0;
+                            break;
+                        }
+                    }
+
+                    // flag = 1 means i is prime
+                    // and flag = 0 means i is not prime
+                    if (flag == 1)
+                    {
+                        PrimesFound.Add(i);
+                    }
+                }
+            });
+
+            return PrimesFound;
+
         }
+    
 
         public void MeasureTime(Action ac, string name)
         {
