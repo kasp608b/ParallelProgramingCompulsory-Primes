@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,9 +25,13 @@ namespace Primes
 
             // Explicitly handling the cases when a is less than
             // 2
+
+            if (a == 0)
+            {
+                a++;
+            }
             if (a == 1)
             {
-                PrimesFound.Add(a);
                 a++;
                 if (b >= 2)
                 {
@@ -80,7 +85,7 @@ namespace Primes
         public List<long> GetPrimesParallel(long first, long last)
         {
 
-            List<long> PrimesFound = new List<long>();
+            ConcurrentQueue<long> PrimesFound = new ConcurrentQueue<long>();
             int a, b, i, j, flag;
 
             a = Convert.ToInt32(first); // Take input
@@ -89,19 +94,23 @@ namespace Primes
 
             // Explicitly handling the cases when a is less than
             // 2
+
+            if (a == 0)
+            {
+                a++;
+            }
             if (a == 1)
             {
-                PrimesFound.Add(a);
                 a++;
                 if (b >= 2)
                 {
-                    PrimesFound.Add(a);
+                    PrimesFound.Enqueue(a);
                     a++;
                 }
             }
             if (a == 2)
             {
-                PrimesFound.Add(a);
+                PrimesFound.Enqueue(a);
             }
 
             // MAKING SURE THAT a IS ODD BEFORE WE BEGIN
@@ -111,39 +120,102 @@ namespace Primes
                 a++;
             }
 
-            // NOTE : WE TRAVERSE THROUGH ODD NUMBERS ONLY
-            /*
+            
+            //Make a list of odd numbers
+            List<int> oddNums = new List<int>();
+
             for (i = a; i <= b; i = i + 2)
-            {*/
-            Parallel.ForEach(Partitioner.Create(0, b), (range, loopState) =>
             {
-                for (int i = range.Item1; i < range.Item2; i += 2)
+                oddNums.Add(i);
+            }
+
+            Parallel.ForEach(oddNums, oddNum =>
+            {
+                // flag variable to tell
+                // if i is prime or not
+                flag = 1;
+
+                // WE TRAVERSE TILL SQUARE ROOT OF j only.
+                // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
+
+              
+                for (j = 2; j * j <= oddNum; ++j)
                 {
-                    // flag variable to tell
-                    // if i is prime or not
-                    flag = 1;
-
-                    // WE TRAVERSE TILL SQUARE ROOT OF j only.
-                    // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
-                    for (j = 2; j * j <= i; ++j)
+                    if (oddNum % j == 0)
                     {
-                        if (i % j == 0)
-                        {
-                            flag = 0;
-                            break;
-                        }
-                    }
-
-                    // flag = 1 means i is prime
-                    // and flag = 0 means i is not prime
-                    if (flag == 1)
-                    {
-                        PrimesFound.Add(i);
+                        flag = 0;
+                        break;
                     }
                 }
+
+                // flag = 1 means i is prime
+                // and flag = 0 means i is not prime
+                if (flag == 1)
+                {
+                    PrimesFound.Enqueue(oddNum);
+                }
+
             });
 
-            return PrimesFound;
+            //Parallel.ForEach(Partitioner.Create(0, oddNum.Count), (range, loopState) =>
+            //{
+            //    for (int i = range.Item1; i < range.Item2; i++)
+            //    {
+            //        // flag variable to tell
+            //        // if i is prime or not
+            //        flag = 1;
+
+            //        // WE TRAVERSE TILL SQUARE ROOT OF j only.
+            //        // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
+            //        for (j = 2; j * j <= i; ++j)
+            //        {
+            //            if (i % j == 0)
+            //            {
+            //                flag = 0;
+            //                break;
+            //            }
+            //        }
+
+            //        // flag = 1 means i is prime
+            //        // and flag = 0 means i is not prime
+            //        if (flag == 1)
+            //        {
+            //            PrimesFound.Add(i);
+            //        }
+            //    }
+            //});
+
+            //// NOTE : WE TRAVERSE THROUGH ODD NUMBERS ONLY
+            //for (i = a; i <= b; i = i + 2)
+            //{
+
+
+            //    // flag variable to tell
+            //    // if i is prime or not
+            //    flag = 1;
+
+            //    // WE TRAVERSE TILL SQUARE ROOT OF j only.
+            //    // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
+            //    for (j = 2; j * j <= i; ++j)
+            //    {
+            //        if (i % j == 0)
+            //        {
+            //            flag = 0;
+            //            break;
+            //        }
+            //    }
+
+            //    // flag = 1 means i is prime
+            //    // and flag = 0 means i is not prime
+            //    if (flag == 1)
+            //    {
+            //        PrimesFound.Add(i);
+            //    }
+            //}
+            List<long> sortedPrimes = PrimesFound.ToList<long>();
+            sortedPrimes.Sort();
+
+            return sortedPrimes;
 
         }
     
