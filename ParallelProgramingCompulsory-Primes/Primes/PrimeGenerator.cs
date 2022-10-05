@@ -24,9 +24,13 @@ namespace Primes
 
             // Explicitly handling the cases when a is less than
             // 2
+            if(a == 0)
+            {
+                a++;
+            }
             if (a == 1)
             {
-                PrimesFound.Add(a);
+         
                 a++;
                 if (b >= 2)
                 {
@@ -88,45 +92,23 @@ namespace Primes
 
             b = Convert.ToInt32(last); // Take input
 
-            // Explicitly handling the cases when a is less than
-            // 2
-            if (a == 1)
-            {
-                PrimesFound.Add(a);
-                a++;
-                if (b >= 2)
-                {
-                    PrimesFound.Add(a);
-                    a++;
-                }
-            }
-            if (a == 2)
-            {
-                PrimesFound.Add(a);
-            }
+           
 
-            // MAKING SURE THAT a IS ODD BEFORE WE BEGIN
-            // THE LOOP
-            if (a % 2 == 0)
-            {
-                a++;
-            }
 
-            // NOTE : WE TRAVERSE THROUGH ODD NUMBERS ONLY
-            /*
-            for (i = a; i <= b; i = i + 2)
-            {*/
             Parallel.ForEach(Partitioner.Create(0, b), (range, loopState) =>
             {
                 for (int i = range.Item1; i < range.Item2; i++)
                 {
+                    // Skip 0 and 1 as they are
+                    // neither prime nor composite
+                    if (i == 1 || i == 0)
+                        continue;
+
                     // flag variable to tell
                     // if i is prime or not
                     flag = 1;
 
-                    // WE TRAVERSE TILL SQUARE ROOT OF j only.
-                    // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
-                    for (j = 2; j * j <= i; ++j)
+                    for (j = 2; j <= i / 2; ++j)
                     {
                         if (i % j == 0)
                         {
@@ -138,18 +120,44 @@ namespace Primes
                     // flag = 1 means i is prime
                     // and flag = 0 means i is not prime
                     if (flag == 1)
-                    {
-                        lock (theLock)
-                        {
-                            PrimesFound.Add(i);
-                        }
-                    }
+                        PrimesFound.Add(i);
+
                 }
             });
 
-            return PrimesFound;
+            PrimesFound.Sort();
 
-        }
+            return PrimesFound;
+/*
+            for (i = a; i <= b; i++)
+            {
+
+                // Skip 0 and 1 as they are
+                // neither prime nor composite
+                if (i == 1 || i == 0)
+                    continue;
+
+                // flag variable to tell
+                // if i is prime or not
+                flag = 1;
+
+                for (j = 2; j <= i / 2; ++j)
+                {
+                    if (i % j == 0)
+                    {
+                        flag = 0;
+                        break;
+                    }
+                }
+
+                // flag = 1 means i is prime
+                // and flag = 0 means i is not prime
+                if (flag == 1)
+                    Console.WriteLine(i);
+            }
+        }*/
+
+    }
     
 
         public void MeasureTime(Action ac, string name)
