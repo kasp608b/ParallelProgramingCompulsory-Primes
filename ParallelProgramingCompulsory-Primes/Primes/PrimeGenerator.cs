@@ -17,62 +17,10 @@ namespace Primes
         {
 
             List<long> PrimesFound = new List<long>();
-            int a, b, i, j, flag;
 
-            a = Convert.ToInt32(first); // Take input
-
-            b = Convert.ToInt32(last); // Take input
-
-            // Explicitly handling the cases when a is less than
-            // 2
-
-            if (a == 0)
+            for (long i = first; i <= last; i++)
             {
-                a++;
-            }
-            if (a == 1)
-            {
-                a++;
-                if (b >= 2)
-                {
-                    PrimesFound.Add(a);
-                    a++;
-                }
-            }
-            if (a == 2)
-            {
-                PrimesFound.Add(a);
-            }
-
-            // MAKING SURE THAT a IS ODD BEFORE WE BEGIN
-            // THE LOOP
-            if (a % 2 == 0)
-            {
-                a++;
-            }
-
-            // NOTE : WE TRAVERSE THROUGH ODD NUMBERS ONLY
-            for (i = a; i <= b; i = i + 2)
-            {
-
-                // flag variable to tell
-                // if i is prime or not
-                flag = 1;
-
-                // WE TRAVERSE TILL SQUARE ROOT OF j only.
-                // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
-                for (j = 2; j * j <= i; ++j)
-                {
-                    if (i % j == 0)
-                    {
-                        flag = 0;
-                        break;
-                    }
-                }
-
-                // flag = 1 means i is prime
-                // and flag = 0 means i is not prime
-                if (flag == 1)
+                if (IsPrime(i))
                 {
                     PrimesFound.Add(i);
                 }
@@ -86,77 +34,12 @@ namespace Primes
         {
 
             ConcurrentQueue<long> PrimesFound = new ConcurrentQueue<long>();
-            int a, b, i;
-
-            a = Convert.ToInt32(first); // Take input
-
-            b = Convert.ToInt32(last); // Take input
-
-            // Explicitly handling the cases when a is less than
-            // 2
-
-            if (a == 0)
+            Parallel.For(first, last, (i) =>
             {
-                a++;
-            }
-            if (a == 1)
-            {
-                a++;
-                if (b >= 2)
+                if (IsPrime(i))
                 {
-                    PrimesFound.Enqueue(a);
-                    a++;
+                    PrimesFound.Enqueue(i);
                 }
-            }
-            if (a == 2)
-            {
-                PrimesFound.Enqueue(a);
-            }
-
-            // MAKING SURE THAT a IS ODD BEFORE WE BEGIN
-            // THE LOOP
-            if (a % 2 == 0)
-            {
-                a++;
-            }
-
-
-            //Make a list of odd numbers
-            List<int> oddNums = new List<int>();
-
-            for (i = a; i <= b; i = i + 2)
-            {
-                oddNums.Add(i);
-            }
-
-            Parallel.ForEach(oddNums, oddNum =>
-            {
-                int j;
-                int flag;
-                // flag variable to tell
-                // if i is prime or not
-                flag = 1;
-
-                // WE TRAVERSE TILL SQUARE ROOT OF j only.
-                // (LARGEST POSSIBLE VALUE OF A PRIME FACTOR)
-
-
-                for (j = 2; j * j <= oddNum; ++j)
-                {
-                    if (oddNum % j == 0)
-                    {
-                        flag = 0;
-                        break;
-                    }
-                }
-
-                // flag = 1 means i is prime
-                // and flag = 0 means i is not prime
-                if (flag == 1)
-                {
-                    PrimesFound.Enqueue(oddNum);
-                }
-
             });
 
             List<long> sortedPrimes = PrimesFound.ToList<long>();
@@ -176,5 +59,17 @@ namespace Primes
             Console.WriteLine(name + " Total Time = {0:f3} sec.", sw.Elapsed.TotalSeconds);
 
         }
+
+        private bool IsPrime(long number)
+        {
+            if (number < 2) return false;
+            if (number == 2) return true;
+            if (number % 2 == 0) return false;
+            for (long i = 3; i * i <= number; i += 2)
+                if (number % i == 0)
+                    return false;
+            return true;
+        }
+
     }
 }
